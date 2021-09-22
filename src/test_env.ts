@@ -7,17 +7,19 @@ import * as path from 'path';
 export default class CustomEnvironment extends NodeEnvironment {
   private web3;
   private coverage;
+  private network;
   private testName;
 
   constructor(config, context) {
     super(config);
     this.testName = path.relative(process.cwd(), context.testPath).split(path.sep).join('-').replace('.', '_');
     this.coverage = config.testEnvironmentOptions['coverage'] === 'true';
+    this.network = config.testEnvironmentOptions['network'] || 'test';
   }
 
   async setup() {
     let start = new Date();
-    let saddle = await getSaddle('test', this.coverage);
+    let saddle = await getSaddle(this.network, this.coverage);
     this.global['saddle'] = saddle;
     this.global['coverage'] = this.coverage;
     this.global['web3'] = saddle.web3;

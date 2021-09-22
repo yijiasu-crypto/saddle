@@ -201,10 +201,10 @@ export function getCli() {
       verify(argv.network, apiKey, address, contract, contractArgs, argv.verbose);
     })
     .command('test', 'Run contract tests', (yargs) => yargs, (argv) => {
-      test(argv, false, argv.verbose);
+      test(argv, argv.network, false, argv.verbose);
     })
     .command('coverage', 'Run contract coverage tests', (yargs) => yargs, (argv) => {
-      test(argv, true, argv.verbose);
+      test(argv, argv.network, true, argv.verbose);
     })
     .command('init', 'Build initial configuration file', (yargs) => yargs, (argv) => {
       init(argv.verbose);

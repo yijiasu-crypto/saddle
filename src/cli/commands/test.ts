@@ -7,8 +7,9 @@ import {loadConfig} from '../../config';
 
 import {info, debug, warn, error} from '../../logger';
 
-export async function test(argv: yargs.Arguments, coverage: boolean, verbose: number): Promise<void> {
+export async function test(argv: yargs.Arguments, network: string, coverage: boolean, verbose: number): Promise<void> {
   info(`Saddle: running contract ${coverage ? 'coverage' : 'tests'} with jest...\n`, verbose);
+  info(`Saddle: Using network: ${network || 'test'}`, verbose);
 
   // Parse the saddle config
   const config = await loadConfig();
@@ -27,7 +28,7 @@ export async function test(argv: yargs.Arguments, coverage: boolean, verbose: nu
   const res = await jest.runCLI({
     testMatch: testPats.length ? testPats : config.tests,
     testEnvironment: path.join(__dirname, '..', '..', 'test_env.js'),
-    testEnvironmentOptions: { coverage: coverage.toString() },
+    testEnvironmentOptions: { network, coverage: coverage.toString() },
     ...jestArgv
   }, [process.cwd()]);
 
