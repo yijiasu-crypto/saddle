@@ -10,6 +10,7 @@ import {info, debug, warn, error} from '../../logger';
 export async function test(argv: yargs.Arguments, network: string, coverage: boolean, verbose: number): Promise<void> {
   info(`Saddle: running contract ${coverage ? 'coverage' : 'tests'} with jest...\n`, verbose);
   info(`Saddle: Using network: ${network || 'test'}`, verbose);
+  info(`Saddle: Using hardhat: ${!!process.env['USE_HARDHAT']}`, verbose);
 
   // Parse the saddle config
   const config = await loadConfig();
@@ -19,10 +20,11 @@ export async function test(argv: yargs.Arguments, network: string, coverage: boo
   }
 
   // Parse command line args, possibly override testMatch based on remaining argv
-  const jestArgv = buildArgv(argv._);
+  let jestArgv = buildArgv(argv._);
   const testArgs = argv._[0] == 'test' ? argv._.slice(1) : argv._;
   const testPats = testArgs.map(a => `**/${a}`);
 
+  jestArgv = { ...jestArgv, verbose: true, silent: false };
   info(`Jest args: ${JSON.stringify(jestArgv)}`, verbose);
 
   const res = await jest.runCLI({
